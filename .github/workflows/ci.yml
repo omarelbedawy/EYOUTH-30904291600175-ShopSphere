@@ -49,6 +49,11 @@ jobs:
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/ecommerce_test
 
+      - name: Seed test database
+        run: npx prisma db seed
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/ecommerce_test
+
       - name: Run backend tests
         run: npm test
         env:
