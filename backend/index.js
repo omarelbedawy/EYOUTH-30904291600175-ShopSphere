@@ -42,6 +42,10 @@ app.get("/", (req, res) => {
 app.get("/profile", authenticateToken, getProfile);
 app.get("/me", authenticateToken, getMe);
 
+app.get("/health", (req, res) => {
+    res.status(200).json({ status: "ok" });
+});
+
 app.use('/users', userRoutes);
 app.use('/products', productRoutes);
 app.use('/orders', orderRoutes);

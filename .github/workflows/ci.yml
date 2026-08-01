@@ -48,16 +48,19 @@ jobs:
         run: npx prisma db push
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/ecommerce_test
+          DIRECT_URL: postgresql://postgres:postgres@localhost:5432/ecommerce_test
 
       - name: Seed test database
         run: npx prisma db seed
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/ecommerce_test
+          DIRECT_URL: postgresql://postgres:postgres@localhost:5432/ecommerce_test
 
       - name: Run backend tests
         run: npm test
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/ecommerce_test
+          DIRECT_URL: postgresql://postgres:postgres@localhost:5432/ecommerce_test
           JWT_SECRET: test_secret_for_ci
 
   frontend-tests:
