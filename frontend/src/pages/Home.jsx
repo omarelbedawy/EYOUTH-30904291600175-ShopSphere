@@ -21,7 +21,7 @@ function Home({ products, addToCart, page, setPage, totalPages, search, setSearc
         <div key={product.id}>
           {product.imageUrl && (
             <img
-              src={`http://localhost:3000${product.imageUrl}`}
+              src={`${import.meta.env.VITE_API_URL}${product.imageUrl}`}
               alt={product.name}
               width="120"
             />

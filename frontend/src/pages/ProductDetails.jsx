@@ -6,7 +6,7 @@ function ProductDetails({ addToCart }) {
   const [product, setProduct] = useState(null)
 
   useEffect(() => {
-    fetch(`http://localhost:3000/products/${id}`)
+    fetch(`${import.meta.env.VITE_API_URL}/products/${id}`)
       .then(response => response.json())
       .then(data => setProduct(data))
       .catch(error => console.error(error))
@@ -18,7 +18,7 @@ function ProductDetails({ addToCart }) {
     <div>
       {product.imageUrl && (
         <img
-          src={`http://localhost:3000${product.imageUrl}`}
+          src={`${import.meta.env.VITE_API_URL}${product.imageUrl}`}
           alt={product.name}
           width="250"
         />

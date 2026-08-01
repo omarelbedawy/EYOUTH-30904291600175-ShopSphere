@@ -11,7 +11,7 @@ function Admin() {
   const [message, setMessage] = useState('')
 
   useEffect(() => {
-    fetch("http://localhost:3000/admin/stats", { credentials: "include" })
+    fetch(`${import.meta.env.VITE_API_URL}/admin/stats`, { credentials: "include" })
       .then(response => response.json())
       .then(data => setStats(data))
       .catch(error => console.error(error))
@@ -27,7 +27,7 @@ function Admin() {
     formData.append('stock', stock)
     if (image) formData.append('image', image)
 
-    fetch("http://localhost:3000/products", {
+    fetch(`${import.meta.env.VITE_API_URL}/products`, {
       method: "POST",
       credentials: "include",
       body: formData

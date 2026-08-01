@@ -8,7 +8,7 @@ function Login() {
 
   const handleLogin = (e) => {
     e.preventDefault()
-    fetch("http://localhost:3000/users/login", {
+    fetch(`${import.meta.env.VITE_API_URL}/users/login`, {
       credentials: "include",
       method: "POST",
       headers: { "Content-Type": "application/json" },

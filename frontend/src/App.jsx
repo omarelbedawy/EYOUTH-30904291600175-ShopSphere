@@ -18,7 +18,7 @@ function App() {
   const [totalPages, setTotalPages] = useState(1);
 
   useEffect(() => {
-    fetch(`http://localhost:3000/products?page=${page}&limit=6&search=${search}`)
+    fetch(`${import.meta.env.VITE_API_URL}/products?page=${page}&limit=6&search=${search}`)
       .then(response => response.json())
       .then(data => {
         setProducts(data.products);
@@ -50,7 +50,7 @@ function App() {
   };
 
   const handleLogout = () => {
-    fetch("http://localhost:3000/users/logout", { method: "POST", credentials: "include" })
+    fetch(`${import.meta.env.VITE_API_URL}/users/logout`, { method: "POST", credentials: "include" })
       .then(() => {
         setLoggedIn(false);
         setRole(null);

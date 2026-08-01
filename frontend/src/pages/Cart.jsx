@@ -1,6 +1,6 @@
 function Cart({ cart, setCart }) {
   const checkout = () => {
-    fetch("http://localhost:3000/orders", {
+    fetch(`${import.meta.env.VITE_API_URL}/orders`, {
       method: "POST",
       credentials: "include",
       headers: { "Content-Type": "application/json" },

@@ -16,7 +16,7 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
-    origin: "http://localhost:5173",
+    origin: "https://your-actual-vercel-url.vercel.app",
     credentials: true
 }));
 app.use('/uploads', express.static('uploads'));

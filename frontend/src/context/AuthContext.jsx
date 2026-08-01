@@ -7,7 +7,7 @@ export function AuthProvider({ children }) {
     const [role, setRole] = useState(null)
 
     useEffect(() => {
-        fetch("http://localhost:3000/me", { credentials: "include" })
+        fetch(`${import.meta.env.VITE_API_URL}/me`, { credentials: "include" })
             .then(response => response.json())
             .then(data => {
                 if (!data.error) {
