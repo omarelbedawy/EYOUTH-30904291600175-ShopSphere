@@ -15,10 +15,24 @@ const app = express();
 
 app.use(express.json());
 app.use(cookieParser());
+
+const allowedOrigins = [
+    "http://localhost:5173",
+    "https://kebreet.vercel.app"
+];
+
 app.use(cors({
-    origin: "https://your-actual-vercel-url.vercel.app",
+    origin: function (origin, callback) {
+        // allow requests with no origin (like Postman, curl) or from the allowed list
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error("Not allowed by CORS"));
+        }
+    },
     credentials: true
 }));
+
 app.use('/uploads', express.static('uploads'));
 
 app.get("/", (req, res) => {
