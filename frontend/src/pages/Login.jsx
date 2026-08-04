@@ -2,14 +2,13 @@ import { useState } from 'react'
 import { useAuth } from '../context/AuthContext.jsx'
 
 function Login() {
-  const { setLoggedIn, setRole } = useAuth()
+  const { login } = useAuth()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
   const handleLogin = (e) => {
     e.preventDefault()
     fetch(`${import.meta.env.VITE_API_URL}/users/login`, {
-      credentials: "include",
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password })
@@ -19,8 +18,7 @@ function Login() {
         if (data.error) {
           alert(data.error)
         } else {
-          setLoggedIn(true)
-          setRole(data.role)
+          login(data.token, data.role)
         }
       })
       .catch(error => console.error(error))

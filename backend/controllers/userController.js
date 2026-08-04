@@ -56,21 +56,17 @@ async function login(req, res) {
             { expiresIn: "1h" }
         );
 
-        res.cookie("token", token, {
-            httpOnly: true,
-            secure: true,
-            sameSite: "none",
-            maxAge: 60 * 60 * 1000
-        });
-
-        res.json({ message: "Login successful", role: user.role });
+        // Token now returned in the JSON body instead of an HttpOnly cookie,
+        // since frontend (Vercel) and backend (SnapDeploy) are on different
+        // domains, and cross-site cookies are unreliable across browsers.
+        res.json({ message: "Login successful", role: user.role, token });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 }
 
 function logout(req, res) {
-    res.clearCookie("token");
+    // Nothing to clear server-side now — the frontend just discards the token.
     res.json({ message: "Logged out" });
 }
 

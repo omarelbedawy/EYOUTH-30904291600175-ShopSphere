@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
+import { useAuth } from '../context/AuthContext.jsx'
 
 function Admin() {
+  const { token } = useAuth()
   const [stats, setStats] = useState(null)
 
   const [name, setName] = useState('')
@@ -11,11 +13,13 @@ function Admin() {
   const [message, setMessage] = useState('')
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/admin/stats`, { credentials: "include" })
+    fetch(`${import.meta.env.VITE_API_URL}/admin/stats`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
       .then(response => response.json())
       .then(data => setStats(data))
       .catch(error => console.error(error))
-  }, [])
+  }, [token])
 
   const handleCreateProduct = (e) => {
     e.preventDefault()
@@ -29,7 +33,7 @@ function Admin() {
 
     fetch(`${import.meta.env.VITE_API_URL}/products`, {
       method: "POST",
-      credentials: "include",
+      headers: { Authorization: `Bearer ${token}` },
       body: formData
     })
       .then(response => response.json())

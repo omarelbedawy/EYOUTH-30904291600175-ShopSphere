@@ -9,7 +9,7 @@ import Cart from "./pages/Cart";
 import ProductDetails from "./pages/ProductDetails";
 
 function App() {
-  const { loggedIn, role, setLoggedIn, setRole } = useAuth();
+  const { loggedIn, role, logout } = useAuth();
 
   const [products, setProducts] = useState([]);
   const [cart, setCart] = useState([]);
@@ -49,14 +49,6 @@ function App() {
     });
   };
 
-  const handleLogout = () => {
-    fetch(`${import.meta.env.VITE_API_URL}/users/logout`, { method: "POST", credentials: "include" })
-      .then(() => {
-        setLoggedIn(false);
-        setRole(null);
-      });
-  };
-
   return (
     <div>
       <nav>
@@ -65,7 +57,7 @@ function App() {
         <Link to="/cart">Cart ({cart.length})</Link> |{" "}
         <Link to="/admin">Admin</Link> |{" "}
         {loggedIn ? (
-          <button onClick={handleLogout}>Logout</button>
+          <button onClick={logout}>Logout</button>
         ) : (
           <span> - Not logged in</span>
         )}

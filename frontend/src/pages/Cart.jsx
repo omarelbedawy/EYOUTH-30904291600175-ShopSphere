@@ -1,9 +1,15 @@
+import { useAuth } from '../context/AuthContext.jsx'
+
 function Cart({ cart, setCart }) {
+  const { token } = useAuth()
+
   const checkout = () => {
     fetch(`${import.meta.env.VITE_API_URL}/orders`, {
       method: "POST",
-      credentials: "include",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      },
       body: JSON.stringify({
         items: cart.map(item => ({ productId: item.productId, quantity: item.quantity }))
       })
