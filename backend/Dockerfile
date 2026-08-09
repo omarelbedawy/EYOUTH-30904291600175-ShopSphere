@@ -7,6 +7,8 @@ RUN npm install
 
 COPY . .
 
+RUN mkdir -p uploads
+
 RUN npx prisma generate
 
 EXPOSE 3000
