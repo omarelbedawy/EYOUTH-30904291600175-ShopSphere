@@ -1,0 +1,14 @@
+{
+  "version": 2,
+  "builds": [
+    { "src": "api/index.js", "use": "@vercel/node" },
+    { "src": "api/daily-summary.js", "use": "@vercel/node" }
+  ],
+  "routes": [
+    { "src": "/api/daily-summary", "dest": "api/daily-summary.js" },
+    { "src": "/(.*)", "dest": "api/index.js" }
+  ],
+  "crons": [
+    { "path": "/api/daily-summary", "schedule": "0 6 * * *" }
+  ]
+}

@@ -1,0 +1,24 @@
+// Review service's own Prisma schema.
+// Uses the SAME Supabase Postgres project as the main app (simplest setup —
+// one managed database, no extra hosting), but this table is only ever
+// touched by this service. The main app's Prisma schema has no Review model,
+// so review data and logic genuinely live outside it.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Review {
+  id         Int      @id @default(autoincrement())
+  productId  Int
+  authorName String
+  rating     Int
+  comment    String?
+  createdAt  DateTime @default(now())
+}
