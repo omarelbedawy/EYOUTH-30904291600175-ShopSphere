@@ -1,9 +1,38 @@
 const prisma = require('../utils/prisma');
+const supabase = require('../utils/supabase');
+
+const BUCKET = 'product-images';
+const driver = process.env.STORAGE_DRIVER || 'supabase';
 
 async function createProduct(req, res) {
     try {
         const { name, price, description, stock } = req.body;
-        const imageUrl = req.file ? `/uploads/${req.file.filename}` : null;
+        let imageUrl = null;
+
+        if (req.file) {
+            if (driver === 'local') {
+                // multer.diskStorage already wrote the file to backend/uploads/
+                imageUrl = `/uploads/${req.file.filename}`;
+            } else {
+                const fileName = `${Date.now()}-${req.file.originalname.replace(/\s+/g, '_')}`;
+
+                const { error: uploadError } = await supabase.storage
+                    .from(BUCKET)
+                    .upload(fileName, req.file.buffer, {
+                        contentType: req.file.mimetype
+                    });
+
+                if (uploadError) {
+                    return res.status(500).json({ error: `Image upload failed: ${uploadError.message}` });
+                }
+
+                const { data: publicUrlData } = supabase.storage
+                    .from(BUCKET)
+                    .getPublicUrl(fileName);
+
+                imageUrl = publicUrlData.publicUrl;
+            }
+        }
 
         const newProduct = await prisma.product.create({
             data: {
@@ -82,6 +111,16 @@ async function deleteProduct(req, res) {
         const deletedProduct = await prisma.product.delete({
             where: { id: parseInt(productId) }
         });
+
+        // Best-effort cleanup: remove the image from Supabase Storage too,
+        // so deleted products don't leave orphaned files in the bucket.
+        // (Skipped for local driver — local files just sit in uploads/, harmless.)
+        if (driver !== 'local' && deletedProduct.imageUrl) {
+            const fileName = deletedProduct.imageUrl.split('/').pop();
+            supabase.storage.from(BUCKET).remove([fileName]).catch(err =>
+                console.error('Storage cleanup failed:', err.message)
+            );
+        }
 
         res.status(200).json(deletedProduct);
     } catch (error) {

@@ -42,8 +42,13 @@ app.get("/", (req, res) => {
 app.get("/profile", authenticateToken, getProfile);
 app.get("/me", authenticateToken, getMe);
 
+// Add this route in backend/index.js, near your other top-level routes (like "/")
+
 app.get("/health", (req, res) => {
-    res.status(200).json({ status: "ok" });
+    res.status(200).json({
+        status: "ok",
+        timestamp: new Date().toISOString()
+    });
 });
 
 app.use('/users', userRoutes);
