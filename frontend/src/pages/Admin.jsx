@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext.jsx'
 function Admin() {
   const { token } = useAuth()
   const [stats, setStats] = useState(null)
+  const [products, setProducts] = useState([])
 
   const [name, setName] = useState('')
   const [price, setPrice] = useState('')
@@ -12,6 +13,13 @@ function Admin() {
   const [image, setImage] = useState(null)
   const [message, setMessage] = useState('')
 
+  const loadProducts = () => {
+    fetch(`${import.meta.env.VITE_API_URL}/products?limit=100`)
+      .then(response => response.json())
+      .then(data => setProducts(data.products || []))
+      .catch(error => console.error(error))
+  }
+
   useEffect(() => {
     fetch(`${import.meta.env.VITE_API_URL}/admin/stats`, {
       headers: { Authorization: `Bearer ${token}` }
@@ -19,7 +27,28 @@ function Admin() {
       .then(response => response.json())
       .then(data => setStats(data))
       .catch(error => console.error(error))
+
+    loadProducts()
   }, [token])
+
+  const handleDeleteProduct = (id) => {
+    if (!window.confirm('Delete this product?')) return
+
+    fetch(`${import.meta.env.VITE_API_URL}/products/${id}`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${token}` }
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.error) {
+          setMessage(data.error)
+        } else {
+          setProducts(prev => prev.filter(p => p.id !== id))
+          setStats(prev => prev ? { ...prev, productCount: prev.productCount - 1 } : prev)
+        }
+      })
+      .catch(error => console.error(error))
+  }
 
   const handleCreateProduct = (e) => {
     e.preventDefault()
@@ -49,6 +78,7 @@ function Admin() {
           setImage(null)
 
           setStats(prev => prev ? { ...prev, productCount: prev.productCount + 1 } : prev)
+          loadProducts()
         }
       })
       .catch(error => console.error(error))
@@ -76,6 +106,15 @@ function Admin() {
         <button type="submit">Create Product</button>
       </form>
       {message && <p>{message}</p>}
+
+      <h3>All Products</h3>
+      {products.map(product => (
+        <div key={product.id} style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
+          {product.imageUrl && <img src={product.imageUrl} alt={product.name} width="40" />}
+          <span>{product.name} - ${product.price}</span>
+          <button onClick={() => handleDeleteProduct(product.id)}>Delete</button>
+        </div>
+      ))}
     </div>
   )
 }
