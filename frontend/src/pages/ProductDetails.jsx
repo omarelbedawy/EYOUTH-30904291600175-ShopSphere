@@ -18,7 +18,7 @@ function ProductDetails({ addToCart }) {
     <div>
       {product.imageUrl && (
         <img
-          src={`${import.meta.env.VITE_API_URL}${product.imageUrl}`}
+          src={product.imageUrl}
           alt={product.name}
           width="250"
         />
